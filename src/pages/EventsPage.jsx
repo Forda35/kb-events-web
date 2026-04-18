@@ -22,6 +22,10 @@ export default function EventsPage() {
   const [paymentData, setPaymentData] = useState(null);
   const [showWaiting, setShowWaiting] = useState(false);
   const [error, setError] = useState("");
+  const [expandedDescs, setExpandedDescs] = useState({});
+
+  const toggleDesc = (eventId) =>
+    setExpandedDescs(prev => ({ ...prev, [eventId]: !prev[eventId] }));
 
   const loadData = useCallback(async () => {
     try {
@@ -201,9 +205,26 @@ export default function EventsPage() {
                     )}
                   </div>
                   {event.description && (
-                    <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.6, marginBottom: "1.25rem" }}>
-                      {event.description.length > 100 ? event.description.slice(0, 100) + "…" : event.description}
-                    </p>
+                    <div style={{ marginBottom: "1.25rem" }}>
+                      <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.6 }}>
+                        {event.description.length > 100 && !expandedDescs[event.id]
+                          ? event.description.slice(0, 100) + "…"
+                          : event.description}
+                      </p>
+                      {event.description.length > 100 && (
+                        <button
+                          onClick={() => toggleDesc(event.id)}
+                          style={{
+                            background: "none", border: "none", cursor: "pointer",
+                            color: "var(--gold)", fontSize: "0.8rem", fontWeight: 700,
+                            padding: "0.35rem 0", fontFamily: "var(--font-body)",
+                            letterSpacing: "0.3px",
+                          }}
+                        >
+                          {expandedDescs[event.id] ? "▲ Voir moins" : "▼ Voir plus"}
+                        </button>
+                      )}
+                    </div>
                   )}
                   <button
                     className="btn-gold"
