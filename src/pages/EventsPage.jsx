@@ -294,7 +294,7 @@ export default function EventsPage() {
                 <input
                   className="form-input"
                   style={{ border: "none", borderRadius: 0 }}
-                  placeholder="34 00 000 00"
+                  placeholder="(32 ou 37) 00 000 00"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   type="tel"

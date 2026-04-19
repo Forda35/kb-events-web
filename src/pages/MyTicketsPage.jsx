@@ -79,11 +79,11 @@ export default function MyTicketsPage() {
 
       let yMeta = 44;
       if (ticket.event?.date) {
-        doc.text(`📅  ${formatDate(ticket.event.date)}`, W / 2, yMeta, { align: "center" });
+        doc.text(`${formatDate(ticket.event.date)}`, W / 2, yMeta, { align: "center" });
         yMeta += 6;
       }
       if (ticket.event?.location) {
-        doc.text(`📍  ${ticket.event.location}`, W / 2, yMeta, { align: "center" });
+        doc.text(`${ticket.event.location}`, W / 2, yMeta, { align: "center" });
         yMeta += 6;
       }
 
