@@ -135,7 +135,7 @@ export default function MyTicketsPage() {
       doc.setFontSize(7);
       doc.setTextColor(6, 9, 20);
       doc.setFont("helvetica", "bold");
-      doc.text("✓  BILLET CONFIRMÉ", W / 2, 171.5, { align: "center" });
+      doc.text("BILLET CONFIRMÉ", W / 2, 171.5, { align: "center" });
 
       // Footer note
       doc.setFontSize(5.5);
