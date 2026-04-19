@@ -1,3 +1,31 @@
+:root {
+  --bg-primary: #060914;
+  --bg-secondary: #0b1120;
+  --bg-card: #0f1729;
+  --bg-card-hover: #141e35;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dim: #8a6f30;
+  --gold-glow: rgba(201, 168, 76, 0.18);
+  --royal-blue: #1a2d6b;
+  --royal-blue-light: #2241a0;
+  --text-primary: #f0e9d6;
+  --text-secondary: #8a96b0;
+  --text-muted: #4a5470;
+  --border: rgba(201, 168, 76, 0.12);
+  --border-gold: rgba(201, 168, 76, 0.35);
+  --success: #2ecc71;
+  --error: #e74c3c;
+  --warning: #f39c12;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --shadow-gold: 0 0 40px rgba(201, 168, 76, 0.14);
+  --shadow-card: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -240,6 +268,7 @@ body {
   animation: slideUp 0.5s ease 0.1s both;
 }
 .hero-title span { color: var(--gold); text-shadow: 0 0 60px rgba(201, 168, 76, 0.35); }
+
 .hero-title-underline {
   width: 80px; height: 3px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);

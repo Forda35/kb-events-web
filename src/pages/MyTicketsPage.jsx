@@ -74,8 +74,8 @@ export default function MyTicketsPage() {
       doc.setFontSize(7);
       doc.setTextColor(138, 150, 176);
       let yMeta = 44;
-      if (ticket.event?.date) { doc.text(`📅  ${formatDate(ticket.event.date)}`, W / 2, yMeta, { align: "center" }); yMeta += 6; }
-      if (ticket.event?.location) { doc.text(`📍  ${ticket.event.location}`, W / 2, yMeta, { align: "center" }); yMeta += 6; }
+      if (ticket.event?.date) { doc.text(`${formatDate(ticket.event.date)}`, W / 2, yMeta, { align: "center" }); yMeta += 6; }
+      if (ticket.event?.location) { doc.text(`${ticket.event.location}`, W / 2, yMeta, { align: "center" }); yMeta += 6; }
 
       // Dashed separator
       doc.setDrawColor(201, 168, 76);

@@ -160,7 +160,7 @@ export default function EventsPage() {
       {/* APK Banner */}
       <div className="apk-banner">
         <div className="apk-text">
-          <h3>📱 Application Mobile disponible</h3>
+          <h3>Application Mobile disponible</h3>
           <p>Téléchargez l'app KB Events sur Android pour une expérience optimale</p>
         </div>
         <a href="/kb-events.apk" download className="btn-gold" style={{ whiteSpace: "nowrap", flexShrink: 0 }}>
