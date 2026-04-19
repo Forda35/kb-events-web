@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { getMyTickets } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { IconCalendar, IconLocation, IconDownload, IconTicket } from "../components/Icons";
@@ -20,7 +20,6 @@ export default function MyTicketsPage() {
       if (Array.isArray(data)) {
         const confirmed = data.filter(t => t.status === "confirmed" && t.qrCode);
         setTickets(confirmed);
-        // Generate QR codes
         confirmed.forEach(async (t) => {
           const url = await QRCodeLib.toDataURL(t.qrCode, { width: 250, margin: 1, color: { dark: "#000", light: "#fff" } });
           setQrUrls(prev => ({ ...prev, [t.id]: url }));
@@ -54,7 +53,7 @@ export default function MyTicketsPage() {
       doc.setLineWidth(0.4);
       doc.roundedRect(5, 8, 90, 55, 4, 4, "S");
 
-      // KB Events logo text
+      // KB Events
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7);
       doc.setTextColor(201, 168, 76);
@@ -62,10 +61,8 @@ export default function MyTicketsPage() {
 
       // Event name
       doc.setFontSize(13);
-      doc.setFont("helvetica", "bold");
       doc.setTextColor(240, 233, 214);
-      const eventName = ticket.event?.title || "Événement";
-      const nameLines = doc.splitTextToSize(eventName, 80);
+      const nameLines = doc.splitTextToSize(ticket.event?.title || "Événement", 80);
       doc.text(nameLines, W / 2, 26, { align: "center" });
 
       // Price
@@ -73,38 +70,30 @@ export default function MyTicketsPage() {
       doc.setTextColor(201, 168, 76);
       doc.text(formatAriary(ticket.event?.price || 0), W / 2, 36, { align: "center" });
 
-      // Meta info
+      // Meta
       doc.setFontSize(7);
       doc.setTextColor(138, 150, 176);
-
       let yMeta = 44;
-      if (ticket.event?.date) {
-        doc.text(`${formatDate(ticket.event.date)}`, W / 2, yMeta, { align: "center" });
-        yMeta += 6;
-      }
-      if (ticket.event?.location) {
-        doc.text(`${ticket.event.location}`, W / 2, yMeta, { align: "center" });
-        yMeta += 6;
-      }
+      if (ticket.event?.date) { doc.text(`📅  ${formatDate(ticket.event.date)}`, W / 2, yMeta, { align: "center" }); yMeta += 6; }
+      if (ticket.event?.location) { doc.text(`📍  ${ticket.event.location}`, W / 2, yMeta, { align: "center" }); yMeta += 6; }
 
-      // Separator (dashed)
+      // Dashed separator
       doc.setDrawColor(201, 168, 76);
       doc.setLineWidth(0.3);
       doc.setLineDashPattern([2, 2], 0);
       doc.line(5, 68, 95, 68);
-      // Circles on dashes
       doc.setFillColor(6, 9, 20);
       doc.circle(2, 68, 4, "F");
       doc.circle(98, 68, 4, "F");
       doc.setLineDashPattern([], 0);
 
-      // QR Code section
+      // QR section
       doc.setFillColor(15, 23, 41);
       doc.roundedRect(5, 72, 90, 110, 4, 4, "F");
       doc.setDrawColor(201, 168, 76);
       doc.roundedRect(5, 72, 90, 110, 4, 4, "S");
 
-      // QR Code (white background)
+      // QR white bg
       doc.setFillColor(255, 255, 255);
       doc.roundedRect(22, 80, 56, 56, 3, 3, "F");
       doc.addImage(qrUrl, "PNG", 23, 81, 54, 54);
@@ -114,12 +103,11 @@ export default function MyTicketsPage() {
       doc.setTextColor(74, 84, 112);
       doc.text(`N° ${ticket.id.slice(0, 8).toUpperCase()}`, W / 2, 142, { align: "center" });
 
-      // Divider
       doc.setDrawColor(26, 45, 107);
       doc.setLineWidth(0.2);
       doc.line(20, 146, 80, 146);
 
-      // Email
+      // Email label
       doc.setFontSize(6.5);
       doc.setTextColor(138, 150, 176);
       doc.text("Titulaire", W / 2, 152, { align: "center" });
@@ -135,7 +123,7 @@ export default function MyTicketsPage() {
       doc.setFontSize(7);
       doc.setTextColor(6, 9, 20);
       doc.setFont("helvetica", "bold");
-      doc.text("BILLET CONFIRMÉ", W / 2, 171.5, { align: "center" });
+      doc.text("✓  BILLET CONFIRMÉ", W / 2, 171.5, { align: "center" });
 
       // Footer note
       doc.setFontSize(5.5);
@@ -179,14 +167,13 @@ export default function MyTicketsPage() {
           <a href="/" className="btn-gold">Voir les événements</a>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           {tickets.map((ticket) => (
             <div key={ticket.id} className="ticket-card no-screenshot">
+              {/* Header */}
               <div className="ticket-header">
                 <div className="ticket-event-name">{ticket.event?.title || "Événement"}</div>
-                <div style={{ color: "var(--gold)", fontWeight: 900, fontSize: "1.25rem", marginBottom: "0.5rem" }}>
-                  {formatAriary(ticket.event?.price || 0)}
-                </div>
+                <div className="ticket-event-price">{formatAriary(ticket.event?.price || 0)}</div>
                 <div className="ticket-meta">
                   {ticket.event?.date && (
                     <div className="ticket-meta-item">
@@ -203,11 +190,15 @@ export default function MyTicketsPage() {
                 </div>
               </div>
 
+              {/* Dashed perforation separator */}
+              <hr className="ticket-separator" />
+
+              {/* Body */}
               <div className="ticket-body">
                 {/* Status */}
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", background: "rgba(46,204,113,0.1)", border: "1px solid rgba(46,204,113,0.3)", borderRadius: "100px", padding: "0.35rem 1rem" }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--success)" }} />
-                  <span style={{ color: "var(--success)", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "0.5px" }}>BILLET CONFIRMÉ</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", background: "rgba(46,204,113,0.08)", border: "1px solid rgba(46,204,113,0.25)", borderRadius: "100px", padding: "0.35rem 1rem" }}>
+                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--success)", boxShadow: "0 0 6px var(--success)" }} />
+                  <span style={{ color: "var(--success)", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "1px" }}>BILLET CONFIRMÉ</span>
                 </div>
 
                 {/* QR Code */}
@@ -218,14 +209,18 @@ export default function MyTicketsPage() {
                   }
                 </div>
 
-                {/* Ticket number */}
-                <div style={{ color: "var(--text-muted)", fontSize: "0.75rem", letterSpacing: "1px" }}>
-                  N° {ticket.id.slice(0, 8).toUpperCase()}
+                {/* Ticket info */}
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ color: "var(--text-muted)", fontSize: "0.7rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "0.25rem" }}>N° de billet</div>
+                  <div style={{ color: "var(--gold-dim)", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "1px" }}>{ticket.id.slice(0, 8).toUpperCase()}</div>
                 </div>
 
+                <div style={{ height: "1px", background: "var(--border)", width: "100%" }} />
+
                 {/* Email */}
-                <div style={{ color: "var(--text-secondary)", fontSize: "0.8rem" }}>
-                  {user?.email}
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ color: "var(--text-muted)", fontSize: "0.7rem", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "0.25rem" }}>Titulaire</div>
+                  <div style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>{user?.email}</div>
                 </div>
 
                 {/* Download */}

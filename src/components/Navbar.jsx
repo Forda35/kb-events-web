@@ -19,7 +19,11 @@ export default function Navbar() {
     <nav className="navbar">
       <Link to="/" className="navbar-brand">KB Events</Link>
 
-      <button className="hamburger" onClick={() => setOpen(!open)} aria-label="Menu">
+      <button
+        className={`hamburger ${open ? "open" : ""}`}
+        onClick={() => setOpen(!open)}
+        aria-label="Menu"
+      >
         <span /><span /><span />
       </button>
 
@@ -37,7 +41,7 @@ export default function Navbar() {
         </NavLink>
         {user ? (
           <>
-            <span style={{ color: "var(--text-muted)", fontSize: "0.8rem", padding: "0.5rem 0.5rem" }}>
+            <span style={{ color: "var(--text-muted)", fontSize: "0.78rem", padding: "0.5rem 0.75rem", borderLeft: "1px solid var(--border)" }}>
               {user.email}
             </span>
             <button className="nav-btn" onClick={handleLogout}>Déconnexion</button>

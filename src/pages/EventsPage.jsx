@@ -9,7 +9,7 @@ const formatAriary = (a) => `${Number(a).toLocaleString("fr-FR")} Ar`;
 const formatDate = (d) => d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "";
 
 export default function EventsPage() {
-  const { user, isAuth } = useAuth();
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [myTickets, setMyTickets] = useState([]);
@@ -61,10 +61,7 @@ export default function EventsPage() {
     setLegalModal(true);
   };
 
-  const onAcceptLegal = () => {
-    setLegalModal(false);
-    setPayModal(true);
-  };
+  const onAcceptLegal = () => { setLegalModal(false); setPayModal(true); };
 
   const handlePay = async () => {
     const cleanPhone = phone.replace(/\s/g, "");
@@ -92,17 +89,11 @@ export default function EventsPage() {
   };
 
   const closePayModal = () => {
-    setPayModal(false);
-    setPhone("");
-    setSelectedEvent(null);
-    setError("");
+    setPayModal(false); setPhone(""); setSelectedEvent(null); setError("");
   };
 
   const closeWaiting = () => {
-    setShowWaiting(false);
-    setPaymentData(null);
-    setSelectedEvent(null);
-    loadData();
+    setShowWaiting(false); setPaymentData(null); setSelectedEvent(null); loadData();
   };
 
   const legalItems = [
@@ -131,9 +122,31 @@ export default function EventsPage() {
         <h1 className="hero-title">
           Vivez des moments<br /><span>inoubliables</span>
         </h1>
+        <div className="hero-title-underline" />
         <p className="hero-desc">
           Découvrez les meilleurs événements de Madagascar et réservez vos billets en quelques secondes via Orange Money.
         </p>
+
+        {/* Stats bar */}
+        {events.length > 0 && (
+          <div className="hero-stats">
+            <div className="hero-stat">
+              <div className="hero-stat-value">{events.length}</div>
+              <div className="hero-stat-label">Événements</div>
+            </div>
+            <div className="hero-stat-sep" />
+            <div className="hero-stat">
+              <div className="hero-stat-value">100%</div>
+              <div className="hero-stat-label">Sécurisé</div>
+            </div>
+            <div className="hero-stat-sep" />
+            <div className="hero-stat">
+              <div className="hero-stat-value">Orange</div>
+              <div className="hero-stat-label">Money</div>
+            </div>
+          </div>
+        )}
+
         {!isAuth && (
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
             <a href="/register" className="btn-gold">Créer un compte</a>
@@ -147,25 +160,20 @@ export default function EventsPage() {
       {/* APK Banner */}
       <div className="apk-banner">
         <div className="apk-text">
-          <h3>Application Mobile disponible</h3>
+          <h3>📱 Application Mobile disponible</h3>
           <p>Téléchargez l'app KB Events sur Android pour une expérience optimale</p>
         </div>
-        <a
-          href="/kb-events.apk"
-          download
-          className="btn-gold"
-          style={{ whiteSpace: "nowrap" }}
-        >
+        <a href="/kb-events.apk" download className="btn-gold" style={{ whiteSpace: "nowrap", flexShrink: 0 }}>
           ↓ Télécharger l'APK
         </a>
       </div>
 
-      {/* Events */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1rem" }}>
-        <div>
-          <h2 className="section-title">Événements à venir</h2>
-          {events.length > 0 && <p className="section-sub">{events.length} événement{events.length > 1 ? "s" : ""} disponible{events.length > 1 ? "s" : ""}</p>}
-        </div>
+      {/* Events header */}
+      <div style={{ marginBottom: "0.5rem" }}>
+        <h2 className="section-title">Événements à venir</h2>
+        {events.length > 0 && (
+          <p className="section-sub">{events.length} événement{events.length > 1 ? "s" : ""} disponible{events.length > 1 ? "s" : ""}</p>
+        )}
       </div>
 
       {loading ? (
@@ -182,13 +190,19 @@ export default function EventsPage() {
         <div className="events-grid">
           {events.map((event) => {
             const bought = hasTicket(event.id);
+            const isExpanded = expandedDescs[event.id];
+            const longDesc = event.description && event.description.length > 100;
             return (
               <div key={event.id} className="event-card">
                 <div className="event-card-header">
                   {bought && <div className="event-badge-bought">✓ Acheté</div>}
                   <div className="event-card-title">{event.title}</div>
-                  <div className="event-card-price">{formatAriary(event.price)}</div>
+                  <div className="event-card-price-badge">
+                    <span>{formatAriary(event.price)}</span>
+                    <small>/ billet</small>
+                  </div>
                 </div>
+
                 <div className="event-card-body">
                   <div className="event-meta">
                     {event.date && (
@@ -204,35 +218,38 @@ export default function EventsPage() {
                       </div>
                     )}
                   </div>
+
                   {event.description && (
                     <div style={{ marginBottom: "1.25rem" }}>
-                      <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.6 }}>
-                        {event.description.length > 100 && !expandedDescs[event.id]
+                      <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.65 }}>
+                        {longDesc && !isExpanded
                           ? event.description.slice(0, 100) + "…"
                           : event.description}
                       </p>
-                      {event.description.length > 100 && (
+                      {longDesc && (
                         <button
                           onClick={() => toggleDesc(event.id)}
                           style={{
                             background: "none", border: "none", cursor: "pointer",
                             color: "var(--gold)", fontSize: "0.8rem", fontWeight: 700,
-                            padding: "0.35rem 0", fontFamily: "var(--font-body)",
-                            letterSpacing: "0.3px",
+                            padding: "0.35rem 0", fontFamily: "var(--font-body)", letterSpacing: "0.3px",
                           }}
                         >
-                          {expandedDescs[event.id] ? "▲ Voir moins" : "▼ Voir plus"}
+                          {isExpanded ? "▲ Voir moins" : "▼ Voir plus"}
                         </button>
                       )}
                     </div>
                   )}
+
                   <button
                     className="btn-gold"
                     style={{ width: "100%" }}
                     onClick={() => onBuyPress(event)}
                     disabled={bought}
                   >
-                    {bought ? <><IconCheck size={16} color="var(--success)" /> Billet obtenu</> : <><IconTicket size={16} color="var(--gold)" /> Acheter un billet</>}
+                    {bought
+                      ? <><IconCheck size={16} color="var(--success)" /> Billet obtenu</>
+                      : <><IconTicket size={16} color="var(--gold)" /> Acheter un billet</>}
                   </button>
                 </div>
               </div>
@@ -288,13 +305,13 @@ export default function EventsPage() {
             <div className="form-group">
               <label className="form-label">Votre numéro de téléphone Orange</label>
               <div style={{ display: "flex", border: "1.5px solid var(--border)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", background: "rgba(26,45,107,0.3)", padding: "0 0.875rem", borderRight: "1px solid var(--border)" }}>
+                <div style={{ display: "flex", alignItems: "center", background: "rgba(26,45,107,0.3)", padding: "0 0.875rem", borderRight: "1px solid var(--border)" }}>
                   <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem", fontWeight: 600 }}>+261</span>
                 </div>
                 <input
                   className="form-input"
                   style={{ border: "none", borderRadius: 0 }}
-                  placeholder="(32 ou 37) 00 000 00"
+                  placeholder="34 00 000 00"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   type="tel"
