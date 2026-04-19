@@ -163,7 +163,7 @@ export default function EventsPage() {
           <h3>Application Mobile disponible</h3>
           <p>Téléchargez l'app KB Events sur Android pour une expérience optimale</p>
         </div>
-        <a href="/kb-events.apk" download className="btn-gold" style={{ whiteSpace: "nowrap", flexShrink: 0 }}>
+        <a href="/KB Events.apk" download className="btn-gold" style={{ whiteSpace: "nowrap", flexShrink: 0 }}>
           ↓ Télécharger l'APK
         </a>
       </div>
